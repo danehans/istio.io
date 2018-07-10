@@ -30,16 +30,22 @@ route requests to all available versions of a service in a random fashion.
 > This task assumes you don't have any routes set yet. If you've already created conflicting route rules for the sample,
 you'll need to use `replace` rather than `create` in the following command.
 
-1.  Set the default version for all microservices to v1.
+1.  Set the default version for all microservices to v1. First, create the destination rules with the following command:
 
     {{< text bash >}}
-    $ istioctl create -f @samples/bookinfo/routing/route-rule-all-v1.yaml@
+    $ istioctl create -f @samples/bookinfo/networking/destination-rule-all.yaml@
     {{< /text >}}
 
-    If you enabled `mTLS`, please run the following instead
+    If you enabled `mTLS`, run the following instead:
 
     {{< text bash >}}
-    $ istioctl create -f @samples/bookinfo/routing/route-rule-all-v1-mtls.yaml@
+    $ istioctl create -f @samples/bookinfo/networking/destination-rule-all-mtls.yaml@
+    {{< /text >}}
+
+    Next, create the virtual services:
+
+    {{< text bash >}}
+    $ istioctl create -f @samples/bookinfo/networking/virtual-service-all-v1.yaml@
     {{< /text >}}
 
     > In a Kubernetes deployment of Istio, you can replace `istioctl`
@@ -129,7 +135,7 @@ you'll need to use `replace` rather than `create` in the following command.
     `reviews:v2` instances.
 
     {{< text bash >}}
-    $ istioctl replace -f @samples/bookinfo/routing/route-rule-reviews-test-v2.yaml@
+    $ istioctl replace -f @samples/bookinfo/networking/route-rule-reviews-test-v2.yaml@
     {{< /text >}}
 
     Confirm the rule is created:
@@ -180,16 +186,22 @@ all users to v2, optionally in a gradual fashion. We'll explore this in a separa
 
 ## Cleanup
 
-*   Remove the application routing rules.
+*   Remove the virtual services with the following command:
 
     {{< text bash >}}
-    $ istioctl delete -f @samples/bookinfo/routing/route-rule-all-v1.yaml@
+    $ istioctl delete -f @samples/bookinfo/networking/virtual-service-all-v1.yaml@
     {{< /text >}}
 
-    If you enabled `mTLS`, please run the following instead
+    Next, remove the application routing rules:
 
     {{< text bash >}}
-    $ istioctl delete -f @samples/bookinfo/routing/route-rule-all-v1-mtls.yaml@
+    $ istioctl delete -f @samples/bookinfo/networking/route-rule-all-v1.yaml@
+    {{< /text >}}
+
+    If you enabled `mTLS`, run the following instead:
+
+    {{< text bash >}}
+    $ istioctl delete -f @samples/bookinfo/networking/route-rule-all-v1-mtls.yaml@
     {{< /text >}}
 
 * If you are not planning to explore any follow-on tasks, refer to the
